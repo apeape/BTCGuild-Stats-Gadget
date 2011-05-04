@@ -48,20 +48,27 @@ namespace BitcoinWPFGadget
 
         public void UpdateTimerTick(object state)
         {
-            GetMarkets();
+            try
+            {
+                GetMarkets();
 
-            // update history
-            UpdateGUI(() =>
-                {
-                    var currentMarket = GetCurrentMarket();
-                    if (lastSymbol == currentMarket.symbol)
-                        lastBid = currentMarket.bid;
-                    else
-                        lastBid = 0;
-                    lastSymbol = currentMarket.symbol;
-                });
+                // update history
+                UpdateGUI(() =>
+                    {
+                        var currentMarket = GetCurrentMarket();
+                        if (lastSymbol == currentMarket.symbol)
+                            lastBid = currentMarket.bid;
+                        else
+                            lastBid = 0;
+                        lastSymbol = currentMarket.symbol;
+                    });
 
-            UpdateMarketDisplay();
+                UpdateMarketDisplay();
+            }
+            catch (Exception)
+            {
+                // probably timed out on json webrequest
+            }
         }
 
         public void UpdateCountdownDisplay(object state)
@@ -81,33 +88,26 @@ namespace BitcoinWPFGadget
             {
                 UpdateGUI(() =>
                 {
-                    try
-                    {
-                        // wait for initial market data fetching
-                        while (Markets == null)
-                            Thread.Sleep(1000);
+                    // wait for initial market data fetching
+                    while (Markets == null)
+                        Thread.Sleep(1000);
 
-                        var currentMarket = GetCurrentMarket();
+                    var currentMarket = GetCurrentMarket();
 
-                        this.lastTrade.Text = currentMarket.latestTrade.ToString();
-                        this.Bid.Text = currentMarket.bid.ToString();
-                        this.Currency.Text = currentMarket.currency.ToString();
-                        var change = 100 - ((lastBid / currentMarket.bid) * 100);
-                        this.Change.Text = change.ToString("N2") + "%";
-                        this.Change.Visibility = change != 0 ? Visibility.Visible : Visibility.Hidden;
-                        this.UpArrow.Visibility = change > 0 ? Visibility.Visible : Visibility.Hidden;
-                        this.DownArrow.Visibility = change < 0 ? Visibility.Visible : Visibility.Hidden;
+                    this.lastTrade.Text = currentMarket.latestTrade.ToString();
+                    this.Bid.Text = currentMarket.bid.ToString();
+                    this.Currency.Text = currentMarket.currency.ToString();
+                    var change = 100 - ((lastBid / currentMarket.bid) * 100);
+                    this.Change.Text = change.ToString("N2") + "%";
+                    this.Change.Visibility = change != 0 ? Visibility.Visible : Visibility.Hidden;
+                    this.UpArrow.Visibility = change > 0 ? Visibility.Visible : Visibility.Hidden;
+                    this.DownArrow.Visibility = change < 0 ? Visibility.Visible : Visibility.Hidden;
 
-                        this.Ask.Text = currentMarket.ask.ToString();
-                        this.Volume.Text = currentMarket.volume.ToString();
-                        this.Trades.Text = currentMarket.n_trades.ToString();
-                        this.Currency.Text = currentMarket.currency.ToString();
-                        this.Currency.Text = currentMarket.currency.ToString();
-                    }
-                    catch (Exception)
-                    {
-                        // probably timed out on json webrequest
-                    }
+                    this.Ask.Text = currentMarket.ask.ToString();
+                    this.Volume.Text = currentMarket.volume.ToString();
+                    this.Trades.Text = currentMarket.n_trades.ToString();
+                    this.Currency.Text = currentMarket.currency.ToString();
+                    this.Currency.Text = currentMarket.currency.ToString();
                 });
             }).Start();
         }
