@@ -9,3 +9,4 @@ requires [.net 4.0 client runtimes](http://www.microsoft.com/downloads/en/detail
 
 probably requires WPF runtimes as well
 
+![screenshot](http://dl.dropbox.com/u/6281166/btccharts_gadget_wip2.png)
