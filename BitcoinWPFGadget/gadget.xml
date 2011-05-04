@@ -1,0 +1,22 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<gadget>
+  <name>Bitcoin Charts Gadget</name>
+  <namespace>ape</namespace>
+  <version>1.0.0.1</version>
+  <author name="ape">
+    <info url="mailto://sapien@gmail.com" text="Email ape" />
+    <logo src="BC_Logo_.png" />
+  </author>
+  <copyright>Copyright © 2011 ape</copyright>
+  <description>Send donations to 1JAvRGSC1b7KfnEgxob7YrMDJMJ6syUg24</description>
+  <icons>
+    <icon width="64" height="64" src="BC_Logo_.png" />
+  </icons>
+  <hosts>
+    <host name="sidebar">
+      <base type="HTML" apiVersion="1.0.0" src="gadget.html" />
+      <permissions>full</permissions>
+      <platform minPlatformVersion="0.3" />
+    </host>
+  </hosts>
+</gadget>

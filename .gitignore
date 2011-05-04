@@ -1,0 +1,10 @@
+obj/
+bin/
+publish/
+*.suo
+*.user
+Log/
+log/
+*.db
+*.Debug.cachefile
+*.cachefile
