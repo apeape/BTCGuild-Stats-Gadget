@@ -22,5 +22,17 @@ namespace BitcoinWPFGadget.Properties {
                 return defaultInstance;
             }
         }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("")]
+        public string btcguild_apikey {
+            get {
+                return ((string)(this["btcguild_apikey"]));
+            }
+            set {
+                this["btcguild_apikey"] = value;
+            }
+        }
     }
 }

@@ -4,45 +4,86 @@
       xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
       xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
       mc:Ignorable="d" 
+      DataContext="{Binding RelativeSource={RelativeSource Self}}"
       Title="MainPage" Foreground="White">
     <Grid>
         <Grid.RowDefinitions>
+            <RowDefinition Height="32"/>
+            <RowDefinition Height="55"/>
             <RowDefinition />
-            <RowDefinition />
-            <RowDefinition />
-            <RowDefinition />
-            <RowDefinition />
-            <RowDefinition />
-            <RowDefinition />
+            <RowDefinition Height="55"/>
+            <RowDefinition Height="25"/>
         </Grid.RowDefinitions>
-        <Grid.ColumnDefinitions>
-            <ColumnDefinition Width="95" />
-            <ColumnDefinition />
-        </Grid.ColumnDefinitions>
-        <Label Content="Symbol:" HorizontalAlignment="Left" VerticalAlignment="Center" Grid.Column="0" Grid.Row="0" Foreground="LightYellow" />
-        <ComboBox HorizontalAlignment="Left" Name="symbols" VerticalAlignment="Center" Grid.Column="1" Grid.Row="0" SelectionChanged="symbols_SelectionChanged" />
-
-        <Label Content="Last Trade:" HorizontalAlignment="Left" VerticalAlignment="Center" Grid.Column="0" Grid.Row="1" Foreground="LightYellow" />
-        <TextBlock HorizontalAlignment="Left" Name="lastTrade" VerticalAlignment="Center" Grid.Column="1" Grid.Row="1" Foreground="White">0</TextBlock>
-
-        <Label Content="Best Bid:" HorizontalAlignment="Left" VerticalAlignment="Center" Grid.Column="0" Grid.Row="2" Foreground="LightYellow" />
-        <TextBlock Grid.Column="1" Grid.Row="2" HorizontalAlignment="Left" VerticalAlignment="Center">
-            <TextBlock Name="Bid" Foreground="White">0</TextBlock>
-            <TextBlock Name="Currency" Foreground="White">USD</TextBlock>
-            <Path Name="UpArrow" Visibility="Hidden" Fill="#FF83FF62" Data="M 0 6 L 12 6 L 6 0 Z"/>
-            <Path Name="DownArrow" Visibility="Hidden" Fill="Red" Data="M 0 0 L 6 6 L 12 0 Z" Margin="-16,0,0,0" />
-            <TextBlock Name="Change" Foreground="White">0%</TextBlock>
+        <TextBlock VerticalAlignment="Center" HorizontalAlignment="Left" Grid.Row="0" Padding="4">
+            <TextBlock Foreground="LightYellow" Name="test" Margin="0,-5,0,0">BTCGuild Stats</TextBlock>
+            <TextBlock Foreground="LightYellow" ToolTip="BTCGuild API Key" Margin="80,-5,0,0">API key</TextBlock>
+            <TextBox TextAlignment="Left"  Name="btcguild_apikey" Margin="0,0,0,0" ToolTip="BTCGuild API Key" FontSize="10" Background="#FFE9E9E9" Width="190" TextChanged="btcguild_apikey_TextChanged"></TextBox>
+            <Button Content="save" Height="23" Name="savebutton" Width="75" Margin="0,3,0,0" Click="savebutton_Click" />
+            
         </TextBlock>
-        <Label Content="Best Ask:" HorizontalAlignment="Left" VerticalAlignment="Center" Grid.Column="0" Grid.Row="3" Foreground="LightYellow" />
-        <TextBlock Name="Ask" Foreground="White" Grid.Column="1" Grid.Row="3" HorizontalAlignment="Left" VerticalAlignment="Center" >0</TextBlock>
-        <Label Content="Day's Volume:" HorizontalAlignment="Left" VerticalAlignment="Center" Grid.Column="0" Grid.Row="4" Foreground="LightYellow" />
-        <TextBlock Name="Volume" Foreground="White" Grid.Column="1" Grid.Row="4" HorizontalAlignment="Left" VerticalAlignment="Center" >0</TextBlock>
-        <Label Content="# Trades:" HorizontalAlignment="Left" VerticalAlignment="Center" Grid.Column="0" Grid.Row="5" Foreground="LightYellow" />
-        <TextBlock Name="Trades" Foreground="White" Grid.Column="1" Grid.Row="5" HorizontalAlignment="Left" VerticalAlignment="Center" >0</TextBlock>
-        <TextBox Grid.ColumnSpan="2" Grid.Column="0" Grid.Row="6" IsReadOnly="True" TextAlignment="Center" HorizontalAlignment="Center" VerticalAlignment="Center" Name="Donations" Margin="0,0,0,2" ToolTip="Donations appreciated &lt;3" FontSize="10" MouseDown="Donations_MouseDown" Background="#FFE9E9E9">1JAvRGSC1b7KfnEgxob7YrMDJMJ6syUg24</TextBox>
-        <TextBlock HorizontalAlignment="Right" VerticalAlignment="Center" Grid.Column="1" Grid.Row="0">
-            <Image Name="clock" Stretch="None" VerticalAlignment="Top" Source="/BitcoinWPFGadget;component/Rtime.png" />
-            <TextBlock Foreground="LightYellow" Name="Countdown" ToolTip="Time until next data update" Margin="0,0,4,0">0</TextBlock>
+        <TextBlock VerticalAlignment="Center" HorizontalAlignment="Right">
+                <Image Name="clock" Stretch="None" VerticalAlignment="Top" Source="/BitcoinWPFGadget;component/Rtime.png" />
+                <TextBlock Foreground="LightYellow" Name="Countdown" ToolTip="Time until next data update" Margin="0,0,4,0">0</TextBlock>
+            </TextBlock>
+
+
+        <ListView Grid.Row="1" ItemsSource="{Binding User}" Name="userData" Height="60" Margin="6,6,6,3">
+            <ListView.View>
+                <GridView>
+                    <GridViewColumn Width="100" Header="Confirmed" 
+                        DisplayMemberBinding="{Binding confirmed_rewards_stats}"  />
+                    <GridViewColumn Width="100" Header="Unconfirmed" 
+                        DisplayMemberBinding="{Binding unconfirmed_rewards_stats}" />
+                    <GridViewColumn Width="100" Header="Estimated"  
+                        DisplayMemberBinding="{Binding estimated_rewards_stats}" />
+                    <GridViewColumn Width="100" Header="Payouts" 
+                        DisplayMemberBinding="{Binding payouts_stats}" />
+                </GridView>
+            </ListView.View>
+        </ListView>
+
+        <ScrollViewer VerticalScrollBarVisibility="Auto" Grid.Row="2" Margin="6,3,6,6">
+            <ListView ItemsSource="{Binding Workers}" Name="workerData">
+                <ListView.View>
+                    <GridView>
+                        <GridViewColumn Width="125" Header="Worker Name" 
+                            DisplayMemberBinding="{Binding worker_name}"  />
+                        <GridViewColumn Width="90" Header="Speed" 
+                            DisplayMemberBinding="{Binding hash_rate_stats}" />
+                        <GridViewColumn Width="70" Header="This Round"  
+                            DisplayMemberBinding="{Binding round_share_stats}" />
+                        <GridViewColumn Width="70" Header="Since Reset" 
+                            DisplayMemberBinding="{Binding reset_share_stats}" />
+                        <GridViewColumn Width="70" Header="Total (Ever)" 
+                            DisplayMemberBinding="{Binding total_share_stats}" />
+                        <GridViewColumn Width="70" Header="Last Share" 
+                            DisplayMemberBinding="{Binding last_share}" />
+                        <GridViewColumn Width="76" Header="Blocks Found" 
+                            DisplayMemberBinding="{Binding blocks_found}" />
+                    </GridView>
+                </ListView.View>
+            </ListView>
+        </ScrollViewer>
+        <ListView Grid.Row="3" ItemsSource="{Binding WorkerTotals}" Name="workerDataTotals" Height="80" Margin="6,3,6,6">
+            <ListView.View>
+                <GridView >
+                    <GridViewColumn Width="150" Header="Total Speed" 
+                        DisplayMemberBinding="{Binding hash_rate_total_stats}" />
+                    <GridViewColumn Width="110" Header="Total This Round"  
+                        DisplayMemberBinding="{Binding round_shares_total_stats}" />
+                    <GridViewColumn Width="110" Header="Total Since Reset" 
+                        DisplayMemberBinding="{Binding reset_shares_total_stats}" />
+                    <GridViewColumn Width="90" Header="Total (Ever)" 
+                        DisplayMemberBinding="{Binding total_shares_total_stats}" />
+                    <GridViewColumn Width="120" Header="Total Blocks Found" 
+                        DisplayMemberBinding="{Binding blocks_found_total}" />
+                </GridView>
+            </ListView.View>
+        </ListView>
+
+        <TextBlock Grid.Row="4">
+            <TextBlock Foreground="LightYellow" Margin="4,-6,2,0">donations? :)</TextBlock>
+            <TextBox IsReadOnly="True" TextAlignment="Center" HorizontalAlignment="Left" VerticalAlignment="Center" Name="Donations" Margin="0,0,0,2" ToolTip="Donations appreciated &lt;3" FontSize="10" MouseDown="Donations_MouseDown" Background="#FFE9E9E9">1JAvRGSC1b7KfnEgxob7YrMDJMJ6syUg24</TextBox>
         </TextBlock>
     </Grid>
     <Page.Background>

@@ -13,6 +13,7 @@ using System.Windows.Navigation;
 using System.Windows.Shapes;
 using System.Threading;
 using System.Threading.Tasks;
+using System.Collections.ObjectModel;
 
 namespace BitcoinWPFGadget
 {
@@ -21,25 +22,25 @@ namespace BitcoinWPFGadget
     /// </summary>
     public partial class MainPage : Page
     {
+        const int btcguild_apikey_length = 32;
         private DateTime LastUpdate;
-        private List<BitcoinCharts.Market> Markets;
-        private BitcoinCharts.MarketSymbol lastSymbol;
-        private double lastBid;
         private Timer updateTimer;
         private Timer displayCountdownTimer;
-        private TimeSpan timerUpdateRate = TimeSpan.FromMinutes(15);
-        private object UpdateLock = new object();
+        private TimeSpan timerUpdateRate = TimeSpan.FromMinutes(1);
+
+        public ObservableCollection<BTCGuild.User> User { get; set; }
+        public ObservableCollection<BTCGuild.Worker> Workers { get; set; }
+        public ObservableCollection<BTCGuild.WorkerTotals> WorkerTotals { get; set; }
 
         public MainPage()
         {
             InitializeComponent();
 
-            // fill combo box with all market symbols
-            Enum.GetNames(typeof(BitcoinCharts.MarketSymbol)).ToList().ForEach(symbol
-                => this.symbols.Items.Add(symbol));
-            this.symbols.SelectedIndex = 0;
+            this.btcguild_apikey.Text = Properties.Settings.Default.btcguild_apikey;
 
-            // start a timer to update the stats every 30 seconds
+            LastUpdate = DateTime.Now;
+
+            // start a timer to update the stats
             updateTimer = new Timer(UpdateTimerTick, null, TimeSpan.Zero, timerUpdateRate);
 
             // start a timer to update the update countdown display
@@ -50,24 +51,52 @@ namespace BitcoinWPFGadget
         {
             try
             {
-                GetMarkets();
-
-                // update history
                 UpdateGUI(() =>
-                    {
-                        var currentMarket = GetCurrentMarket();
-                        if (lastSymbol == currentMarket.symbol)
-                            lastBid = currentMarket.bid;
-                        else
-                            lastBid = 0;
-                        lastSymbol = currentMarket.symbol;
-                    });
+                {
+                    // don't update without a valid api key
+                    if (this.btcguild_apikey.Text == string.Empty || this.btcguild_apikey.Text.Length != btcguild_apikey_length) return;
 
-                UpdateMarketDisplay();
+                    // grab stats from json api
+                    BTCGuild.Stats stats = BTCGuild.GetStats(this.btcguild_apikey.Text);
+
+                    // bind user stats
+                    this.User = new ObservableCollection<BTCGuild.User>();
+                    this.User.Add(stats.user);
+                    this.userData.ItemsSource = this.User;
+
+                    // bind worker stats
+                    var workerstats = stats.workers.Values.ToList();
+                    this.Workers = new ObservableCollection<BTCGuild.Worker>();
+                    workerstats.ForEach(worker => this.Workers.Add(worker));
+                    this.workerData.ItemsSource = this.Workers;
+
+                    // calculate totals
+                    var totals = new BTCGuild.WorkerTotals();
+                    this.WorkerTotals = new ObservableCollection<BTCGuild.WorkerTotals>();
+                    workerstats.ForEach(worker =>
+                        {
+                            totals.total_hash_rate += worker.hash_rate;
+                            totals.blocks_found_total += worker.blocks_found;
+                            totals.reset_shares_total += worker.reset_shares;
+                            totals.reset_stales_total += worker.reset_stales;
+                            totals.round_shares_total += worker.round_shares;
+                            totals.round_stales_total += worker.round_stales;
+                            totals.total_shares_total += worker.total_shares;
+                            totals.total_stales_total += worker.total_stales;
+                        });
+                    this.WorkerTotals.Add(totals);
+                    this.workerDataTotals.ItemsSource = this.WorkerTotals;
+
+                    LastUpdate = DateTime.Now;
+                });
             }
             catch (Exception)
             {
                 // probably timed out on json webrequest
+                UpdateGUI(() =>
+                {
+                    this.test.Text = "Error updating!";
+                });
             }
         }
 
@@ -77,65 +106,6 @@ namespace BitcoinWPFGadget
                 {
                     this.Countdown.Text = (timerUpdateRate - (DateTime.Now - LastUpdate)).ToString(@"mm\:ss");
                 });
-        }
-
-        /// <summary>
-        /// Updates the market display asynchronously
-        /// </summary>
-        public void UpdateMarketDisplay()
-        {
-            new Task(() =>
-            {
-                UpdateGUI(() =>
-                {
-                    // wait for initial market data fetching
-                    while (Markets == null)
-                        Thread.Sleep(1000);
-
-                    var currentMarket = GetCurrentMarket();
-
-                    this.lastTrade.Text = currentMarket.latestTrade.ToString();
-                    this.Bid.Text = currentMarket.bid.ToString();
-                    this.Currency.Text = currentMarket.currency.ToString();
-                    var change = 100 - ((lastBid / currentMarket.bid) * 100);
-                    this.Change.Text = change.ToString("N2") + "%";
-                    this.Change.Visibility = change != 0 ? Visibility.Visible : Visibility.Hidden;
-                    this.UpArrow.Visibility = change > 0 ? Visibility.Visible : Visibility.Hidden;
-                    this.DownArrow.Visibility = change < 0 ? Visibility.Visible : Visibility.Hidden;
-
-                    this.Ask.Text = currentMarket.ask.ToString();
-                    this.Volume.Text = currentMarket.volume.ToString();
-                    this.Trades.Text = currentMarket.n_trades.ToString();
-                    this.Currency.Text = currentMarket.currency.ToString();
-                    this.Currency.Text = currentMarket.currency.ToString();
-                });
-            }).Start();
-        }
-
-        /// <summary>
-        /// Get current market data from bitcoincharts
-        /// </summary>
-        public void GetMarkets()
-        {
-            lock (UpdateLock) // only one of these should ever run at once
-            {
-                Markets = BitcoinCharts.GetMarkets();
-                LastUpdate = DateTime.Now;
-            }
-        }
-
-        /// <summary>
-        /// Returns the currently chosen (in the combo box) market
-        /// </summary>
-        /// <returns></returns>
-        public BitcoinCharts.Market GetCurrentMarket()
-        {
-            var currentSymbol = Utility.StringToEnum<BitcoinCharts.MarketSymbol>(
-                (string)this.symbols.SelectedItem);
-
-            var currentMarket = Markets.SingleOrDefault(m => m.symbol == currentSymbol);
-
-            return currentMarket;
         }
 
         /// <summary>
@@ -151,20 +121,22 @@ namespace BitcoinWPFGadget
             this.Dispatcher.BeginInvoke((ThreadStart)delegate() { action();});
         }
 
-        private void symbols_SelectionChanged(object sender, SelectionChangedEventArgs e)
-        {
-            if (Markets != null)
-            {
-                var currentMarket = GetCurrentMarket();
-                lastSymbol = currentMarket.symbol;
-                lastBid = currentMarket.bid;
-            }
-            UpdateMarketDisplay();
-        }
-
         private void Donations_MouseDown(object sender, MouseButtonEventArgs e)
         {
             Donations.SelectAll();
+        }
+
+        private void savebutton_Click(object sender, RoutedEventArgs e)
+        {
+            Properties.Settings.Default.btcguild_apikey = this.btcguild_apikey.Text;
+            Properties.Settings.Default.Save();
+        }
+
+        private void btcguild_apikey_TextChanged(object sender, TextChangedEventArgs e)
+        {
+            // perform initial update after they paste in a new key
+            if (this.btcguild_apikey.Text.Length == btcguild_apikey_length)
+                UpdateTimerTick(null);
         }
     }
 }

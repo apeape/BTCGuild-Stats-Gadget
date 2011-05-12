@@ -4,9 +4,73 @@ using System.Linq;
 using System.Text;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Converters;
+using System.Collections.ObjectModel;
 
 namespace BitcoinWPFGadget
 {
+    public class BTCGuild
+    {
+        public static BTCGuild.Stats GetStats(string apikey)
+        {
+            return Utility.Deserialize<BTCGuild.Stats>("http://www.btcguild.com/api.php?api_key=" + apikey);
+        }
+
+        public class Stats
+        {
+            public User user { get; set; }
+            public Dictionary<String, Worker> workers { get; set; }
+        }
+
+        public class User
+        {
+            public double confirmed_rewards { get; set; }
+            public double estimated_rewards { get; set; }
+            public double payouts { get; set; }
+            public double unconfirmed_rewards { get; set; }
+
+            public string confirmed_rewards_stats { get { return confirmed_rewards + " BTC"; } }
+            public string estimated_rewards_stats { get { return estimated_rewards + " BTC"; } }
+            public string payouts_stats { get { return payouts + " BTC"; } }
+            public string unconfirmed_rewards_stats { get { return unconfirmed_rewards + " BTC"; } }
+        }
+
+        public class Worker
+        {
+            public UInt64 blocks_found { get; set; }
+            public double hash_rate { get; set; }
+            public string last_share { get; set; }
+            public UInt64 reset_shares { get; set; }
+            public UInt64 reset_stales { get; set; }
+            public UInt64 round_shares { get; set; }
+            public UInt64 round_stales { get; set; }
+            public UInt64 total_shares { get; set; }
+            public UInt64 total_stales { get; set; }
+            public string worker_name { get; set; }
+
+            public string hash_rate_stats { get { return hash_rate + " mH/s"; } }
+            public string reset_share_stats { get { return reset_shares + " (" + reset_stales + ")"; } }
+            public string round_share_stats { get { return round_shares + " (" + round_stales + ")"; } }
+            public string total_share_stats { get { return total_shares + " (" + total_stales + ")"; } }
+        }
+
+        public class WorkerTotals
+        {
+            public double total_hash_rate { get; set; }
+            public UInt64 round_shares_total { get; set; }
+            public UInt64 round_stales_total { get; set; }
+            public UInt64 reset_shares_total { get; set; }
+            public UInt64 reset_stales_total { get; set; }
+            public UInt64 total_shares_total { get; set; }
+            public UInt64 total_stales_total { get; set; }
+
+            public string hash_rate_total_stats { get { return total_hash_rate + " mH/s"; } }
+            public string round_shares_total_stats { get { return round_shares_total + " (" + round_stales_total + ")"; } }
+            public string reset_shares_total_stats { get { return reset_shares_total + " (" + reset_stales_total + ")"; } }
+            public string total_shares_total_stats { get { return total_shares_total + " (" + total_stales_total + ")"; } }
+            public UInt64 blocks_found_total { get; set; }
+        }
+    }
+
     public class BitcoinCharts
     {
         public static List<BitcoinCharts.Market> GetMarkets()
