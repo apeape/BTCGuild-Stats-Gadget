@@ -108,13 +108,12 @@ namespace BitcoinWPFGadget
                         // is [math calc 50*24*60*60 / (1/((2**224-1)/[bc,diff]*$1*1000/2**256))]
                         // BTC per day and [math calc 50*60*60 / (1/((2**224-1)/[bc,diff]*$1*1000/2**256))] BTC per hour.".
                         totals.btc_per_day = 50 * TimeSpan.FromDays(1).TotalSeconds / (1 / (Math.Pow(2, 224) - 1)) / currentDifficulty * totals.total_hash_rate * 1000000 / Math.Pow(2, 256);
-                        totals.btc_per_day_stats = totals.btc_per_day.ToString("0.00");
                     }
 
                     this.WorkerTotals.Add(totals);
                     this.workerDataTotals.ItemsSource = this.WorkerTotals;
 
-                    
+                    this.test.Text = "BTCGuild Stats"; // reset error
                 }
                 catch (Exception e)
                 {

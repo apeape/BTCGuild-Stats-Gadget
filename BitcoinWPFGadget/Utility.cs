@@ -24,7 +24,7 @@ namespace BitcoinWPFGadget
                     return JsonConvert.DeserializeObject<T>(client.DownloadString(url));
                 }
             }
-            catch (Exception e)
+            catch (Exception)
             {
                 // failed to deserialize, usually happens when the website is screwing up
                 return default(T);

@@ -29,7 +29,7 @@ namespace BitcoinWPFGadget
             public UInt64 round_shares { get; set; }
             public TimeSpan round_time { get; set; }
 
-            public string hash_rate_stats { get { return hash_rate + " gH/s"; } }
+            public string hash_rate_stats { get { return (hash_rate / 1000f).ToString("0.00") + " gH/s"; } }
         }
 
         public class User
@@ -81,7 +81,7 @@ namespace BitcoinWPFGadget
             public UInt64 blocks_found_total { get; set; }
 
             public double btc_per_day { get; set; }
-            public string btc_per_day_stats { get; set; }
+            public string btc_per_day_stats { get { return btc_per_day.ToString("0.00"); } }
         }
     }
 
