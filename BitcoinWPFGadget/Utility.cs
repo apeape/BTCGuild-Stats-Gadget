@@ -17,7 +17,10 @@ namespace BitcoinWPFGadget
         /// <returns></returns>
         public static T Deserialize<T>(string url)
         {
-            return JsonConvert.DeserializeObject<T>(new WebClient().DownloadString(url));
+            using (var client = new WebClient())
+            {
+                return JsonConvert.DeserializeObject<T>(client.DownloadString(url));
+            }
         }
 
         public static T StringToEnum<T>(string name)

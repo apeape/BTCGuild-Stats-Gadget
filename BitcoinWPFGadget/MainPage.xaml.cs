@@ -90,6 +90,19 @@ namespace BitcoinWPFGadget
                             totals.total_shares_total += worker.total_shares;
                             totals.total_stales_total += worker.total_stales;
                         });
+
+                    // grab current difficulty
+                    double currentDifficulty = Utility.Deserialize<double>("http://blockexplorer.com/q/getdifficulty");
+                    //"echo The average time to generate a block at $1 Khps, given current difficulty of [bc,diff],
+                    //is [time elapsed [math calc 1/((2**224-1)/[bc,diff]*$1*1000/2**256)]]".
+                    //totals.btc_per_day = 1 /* day */ * 1 / (Math.Pow(2, 224) - 1) / currentDifficulty * totals.total_hash_rate * 1000 / Math.Pow(2, 256);
+
+                    //The expected generation output, at $1 Khps, given current difficulty of [bc,diff
+                    //is [math calc 50*24*60*60 / (1/((2**224-1)/[bc,diff]*$1*1000/2**256))]
+                    //BTC per day and [math calc 50*60*60 / (1/((2**224-1)/[bc,diff]*$1*1000/2**256))] BTC per hour.".
+                    totals.btc_per_day = 50 * TimeSpan.FromDays(1).TotalSeconds / (1 / (Math.Pow(2, 224) - 1)) / currentDifficulty * totals.total_hash_rate * 1000000 / Math.Pow(2, 256);
+                    totals.btc_per_day_stats = totals.btc_per_day.ToString("0.00");
+
                     this.WorkerTotals.Add(totals);
                     this.workerDataTotals.ItemsSource = this.WorkerTotals;
 

@@ -84,15 +84,17 @@
         <ListView Grid.Row="3" Grid.ColumnSpan="2" ItemsSource="{Binding WorkerTotals}" Name="workerDataTotals" Height="80" Margin="6,3,6,3">
             <ListView.View>
                 <GridView >
-                    <GridViewColumn Width="150" Header="Total Speed" 
+                    <GridViewColumn Width="100" Header="Total Speed" 
                         DisplayMemberBinding="{Binding hash_rate_total_stats}" />
-                    <GridViewColumn Width="110" Header="Total This Round"  
+                    <GridViewColumn Width="100" Header="Est BTC/Day" 
+                        DisplayMemberBinding="{Binding btc_per_day_stats}" />
+                    <GridViewColumn Width="105" Header="Total This Round"  
                         DisplayMemberBinding="{Binding round_shares_total_stats}" />
-                    <GridViewColumn Width="110" Header="Total Since Reset" 
+                    <GridViewColumn Width="105" Header="Total Since Reset" 
                         DisplayMemberBinding="{Binding reset_shares_total_stats}" />
                     <GridViewColumn Width="90" Header="Total (Ever)" 
                         DisplayMemberBinding="{Binding total_shares_total_stats}" />
-                    <GridViewColumn Width="120" Header="Total Blocks Found" 
+                    <GridViewColumn Width="110" Header="Total Blocks Found" 
                         DisplayMemberBinding="{Binding blocks_found_total}" />
                 </GridView>
             </ListView.View>

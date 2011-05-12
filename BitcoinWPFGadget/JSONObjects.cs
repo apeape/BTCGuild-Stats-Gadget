@@ -79,6 +79,9 @@ namespace BitcoinWPFGadget
             public string reset_shares_total_stats { get { return reset_shares_total + " (" + reset_stales_total + ")"; } }
             public string total_shares_total_stats { get { return total_shares_total + " (" + total_stales_total + ")"; } }
             public UInt64 blocks_found_total { get; set; }
+
+            public double btc_per_day { get; set; }
+            public string btc_per_day_stats { get; set; }
         }
     }
 
