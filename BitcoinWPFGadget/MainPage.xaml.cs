@@ -31,6 +31,7 @@ namespace BitcoinWPFGadget
         public ObservableCollection<BTCGuild.User> User { get; set; }
         public ObservableCollection<BTCGuild.Worker> Workers { get; set; }
         public ObservableCollection<BTCGuild.WorkerTotals> WorkerTotals { get; set; }
+        public ObservableCollection<BTCGuild.Pool> PoolStats { get; set; }
 
         public MainPage()
         {
@@ -63,6 +64,11 @@ namespace BitcoinWPFGadget
                     this.User = new ObservableCollection<BTCGuild.User>();
                     this.User.Add(stats.user);
                     this.userData.ItemsSource = this.User;
+
+                    // bind pool stats
+                    this.PoolStats = new ObservableCollection<BTCGuild.Pool>();
+                    this.PoolStats.Add(stats.pool);
+                    this.poolDataTotals.ItemsSource = this.PoolStats;
 
                     // bind worker stats
                     var workerstats = stats.workers.Values.ToList();

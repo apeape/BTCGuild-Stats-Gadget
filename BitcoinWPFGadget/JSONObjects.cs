@@ -17,8 +17,19 @@ namespace BitcoinWPFGadget
 
         public class Stats
         {
+            public Pool pool { get; set; }
             public User user { get; set; }
             public Dictionary<String, Worker> workers { get; set; }
+        }
+
+        public class Pool
+        {
+            public UInt64 active_workers { get; set; }
+            public double hash_rate { get; set; }
+            public UInt64 round_shares { get; set; }
+            public TimeSpan round_time { get; set; }
+
+            public string hash_rate_stats { get { return hash_rate + " gH/s"; } }
         }
 
         public class User
