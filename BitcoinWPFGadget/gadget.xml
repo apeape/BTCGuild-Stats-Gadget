@@ -1,6 +1,6 @@
 ﻿<?xml version="1.0" encoding="utf-8" ?>
 <gadget>
-  <name>Bitcoin Charts Gadget</name>
+  <name>BTCGuild Stats</name>
   <namespace>ape</namespace>
   <version>1.0.0.1</version>
   <author name="ape">
