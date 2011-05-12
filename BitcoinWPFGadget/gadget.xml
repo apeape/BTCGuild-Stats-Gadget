@@ -2,7 +2,7 @@
 <gadget>
   <name>BTCGuild Stats</name>
   <namespace>ape</namespace>
-  <version>1.0.0.3</version>
+  <version>1.0.0.4</version>
   <author name="ape">
     <info url="mailto://sapien@gmail.com" text="Email ape" />
     <logo src="BC_Logo_.png" />

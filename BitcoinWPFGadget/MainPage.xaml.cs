@@ -50,15 +50,17 @@ namespace BitcoinWPFGadget
 
         public void UpdateTimerTick(object state)
         {
-            try
+            UpdateGUI(() =>
             {
-                UpdateGUI(() =>
+                try
                 {
                     // don't update without a valid api key
                     if (this.btcguild_apikey.Text == string.Empty || this.btcguild_apikey.Text.Length != btcguild_apikey_length) return;
 
                     // grab stats from json api
                     BTCGuild.Stats stats = BTCGuild.GetStats(this.btcguild_apikey.Text);
+                    if (stats == default(BTCGuild.Stats))
+                        throw new System.Runtime.Serialization.SerializationException("Failed to deserialize BTCGuild stats!");
 
                     // bind user stats
                     this.User = new ObservableCollection<BTCGuild.User>();
@@ -93,30 +95,36 @@ namespace BitcoinWPFGadget
 
                     // grab current difficulty
                     double currentDifficulty = Utility.Deserialize<double>("http://blockexplorer.com/q/getdifficulty");
-                    //"echo The average time to generate a block at $1 Khps, given current difficulty of [bc,diff],
-                    //is [time elapsed [math calc 1/((2**224-1)/[bc,diff]*$1*1000/2**256)]]".
-                    //totals.btc_per_day = 1 /* day */ * 1 / (Math.Pow(2, 224) - 1) / currentDifficulty * totals.total_hash_rate * 1000 / Math.Pow(2, 256);
-
-                    //The expected generation output, at $1 Khps, given current difficulty of [bc,diff
-                    //is [math calc 50*24*60*60 / (1/((2**224-1)/[bc,diff]*$1*1000/2**256))]
-                    //BTC per day and [math calc 50*60*60 / (1/((2**224-1)/[bc,diff]*$1*1000/2**256))] BTC per hour.".
-                    totals.btc_per_day = 50 * TimeSpan.FromDays(1).TotalSeconds / (1 / (Math.Pow(2, 224) - 1)) / currentDifficulty * totals.total_hash_rate * 1000000 / Math.Pow(2, 256);
-                    totals.btc_per_day_stats = totals.btc_per_day.ToString("0.00");
+                    if (currentDifficulty == default(double))
+                    {
+                        // failed to retrieve difficulty, btc per day calculation not possible
+                    }
+                    else
+                    {
+                        // from the gribble bot:
+                        // The expected generation output, at $1 Khps, given current difficulty of [bc,diff
+                        // is [math calc 50*24*60*60 / (1/((2**224-1)/[bc,diff]*$1*1000/2**256))]
+                        // BTC per day and [math calc 50*60*60 / (1/((2**224-1)/[bc,diff]*$1*1000/2**256))] BTC per hour.".
+                        totals.btc_per_day = 50 * TimeSpan.FromDays(1).TotalSeconds / (1 / (Math.Pow(2, 224) - 1)) / currentDifficulty * totals.total_hash_rate * 1000000 / Math.Pow(2, 256);
+                        totals.btc_per_day_stats = totals.btc_per_day.ToString("0.00");
+                    }
 
                     this.WorkerTotals.Add(totals);
                     this.workerDataTotals.ItemsSource = this.WorkerTotals;
 
                     LastUpdate = DateTime.Now;
-                });
-            }
-            catch (Exception)
-            {
-                // probably timed out on json webrequest
-                UpdateGUI(() =>
+                }
+                catch (Exception e)
                 {
-                    this.test.Text = "Error updating!";
-                });
-            }
+                    // probably timed out on json webrequest
+                    UpdateGUI(() =>
+                    {
+                        this.test.Text = e.Message;
+                    });
+                }
+            });
+
+
         }
 
         public void UpdateCountdownDisplay(object state)

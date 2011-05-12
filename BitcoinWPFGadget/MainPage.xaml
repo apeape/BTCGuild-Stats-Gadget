@@ -7,104 +7,132 @@
       DataContext="{Binding RelativeSource={RelativeSource Self}}"
       Title="MainPage" Foreground="White">
     <Grid>
-        <Grid.RowDefinitions>
-            <RowDefinition Height="32"/>
-            <RowDefinition Height="55"/>
-            <RowDefinition />
-            <RowDefinition Height="55"/>
-            <RowDefinition Height="25"/>
-        </Grid.RowDefinitions>
-        <Grid.ColumnDefinitions>
-            <ColumnDefinition />
-            <ColumnDefinition />
-        </Grid.ColumnDefinitions>
-        <TextBlock VerticalAlignment="Center"  HorizontalAlignment="Left" Grid.Row="0" Grid.ColumnSpan="2" Padding="6">
-            <TextBlock Foreground="LightYellow" Name="test" Margin="0,0,0,0">BTCGuild Stats</TextBlock>
-            <TextBlock Foreground="LightYellow" ToolTip="BTCGuild API Key" Margin="120,0,0,0">API key</TextBlock>
-            <TextBox TextAlignment="Left"  Name="btcguild_apikey" Margin="0,0,0,-6" ToolTip="BTCGuild API Key" FontSize="10" Background="#FFE9E9E9" Width="185" TextChanged="btcguild_apikey_TextChanged"></TextBox>
-            <Button Content="save" Height="23" Name="savebutton" Width="75" Margin="0,0,0,-8" Click="savebutton_Click" />
-        </TextBlock>
-        <TextBlock HorizontalAlignment="Right" VerticalAlignment="Center" Grid.Column="1" Grid.Row="0" Padding="6" Width="60" Margin="0,5,0,0">
-            <Image Name="clock" Stretch="None" Source="/BitcoinWPFGadget;component/Rtime.png" />
-            <TextBlock Foreground="LightYellow" Name="Countdown" ToolTip="Time until next data update">00:00</TextBlock>
-        </TextBlock>
+        <TabControl TabStripPlacement="Bottom" Margin="6,6,6,8">
+            <TabControl.Background>
+                <LinearGradientBrush EndPoint="0.5,1" StartPoint="0.5,0">
+                    <GradientStop Color="#FF38475F" Offset="1" />
+                    <GradientStop Color="#FF000000" Offset="0" />
+                </LinearGradientBrush>
+            </TabControl.Background>
+            <TabItem Header="Stats">
+                <Grid>
+                    <Grid.Background>
+                        <LinearGradientBrush EndPoint="0.5,1" StartPoint="0.5,0">
+                            <GradientStop Color="#FF000000" Offset="0" />
+                            <GradientStop Color="#FF38475F" Offset="1" />
+                        </LinearGradientBrush>
+                    </Grid.Background>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="32"/>
+                        <RowDefinition Height="55"/>
+                        <RowDefinition />
+                        <RowDefinition Height="55"/>
+                    </Grid.RowDefinitions>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition />
+                        <ColumnDefinition />
+                    </Grid.ColumnDefinitions>
+                    <TextBlock VerticalAlignment="Center"  HorizontalAlignment="Left" Grid.Row="0" Grid.ColumnSpan="2" Padding="6">
+                        <TextBlock Foreground="LightYellow" Name="test" Margin="0,0,0,0">BTCGuild Stats</TextBlock>
+                        <TextBlock Foreground="LightYellow" ToolTip="BTCGuild API Key" Margin="100,0,0,0">API key</TextBlock>
+                        <TextBox TextAlignment="Left"  Name="btcguild_apikey" Margin="0,0,0,-6" ToolTip="BTCGuild API Key" FontSize="10" Background="#FFE9E9E9" Width="185" TextChanged="btcguild_apikey_TextChanged"></TextBox>
+                        <Button Content="save" Height="23" Name="savebutton" Width="75" Margin="0,0,0,-8" Click="savebutton_Click" />
+                    </TextBlock>
+                    <TextBlock HorizontalAlignment="Right" VerticalAlignment="Center" Grid.Column="1" Grid.Row="0" Padding="6" Width="60" Margin="0,5,0,0">
+                        <Image Name="clock" Stretch="None" Source="/BitcoinWPFGadget;component/Rtime.png" />
+                        <TextBlock Foreground="LightYellow" Name="Countdown" ToolTip="Time until next data update">00:00</TextBlock>
+                    </TextBlock>
 
-        <ListView Grid.Row="1" Grid.Column="0" ItemsSource="{Binding User}" Name="userData" Height="60" Margin="6,6,1,3">
-            <ListView.View>
-                <GridView>
-                    <GridViewColumn Width="65" Header="Confirmed" 
-                        DisplayMemberBinding="{Binding confirmed_rewards_stats}"  />
-                    <GridViewColumn Width="80" Header="Unconfirmed" 
-                        DisplayMemberBinding="{Binding unconfirmed_rewards_stats}" />
-                    <GridViewColumn Width="70" Header="Estimated"  
-                        DisplayMemberBinding="{Binding estimated_rewards_stats}" />
-                    <GridViewColumn Width="80" Header="Payouts" 
-                        DisplayMemberBinding="{Binding payouts_stats}" />
-                </GridView>
-            </ListView.View>
-        </ListView>
+                    <ListView Grid.Row="1" Grid.Column="0" ItemsSource="{Binding User}" Name="userData" Height="60" Margin="6,6,1,3">
+                        <ListView.View>
+                            <GridView>
+                                <GridViewColumn Width="65" Header="Confirmed" 
+                                    DisplayMemberBinding="{Binding confirmed_rewards_stats}"  />
+                                <GridViewColumn Width="80" Header="Unconfirmed" 
+                                    DisplayMemberBinding="{Binding unconfirmed_rewards_stats}" />
+                                <GridViewColumn Width="70" Header="Estimated"  
+                                    DisplayMemberBinding="{Binding estimated_rewards_stats}" />
+                                <GridViewColumn Width="80" Header="Payouts" 
+                                    DisplayMemberBinding="{Binding payouts_stats}" />
+                            </GridView>
+                        </ListView.View>
+                    </ListView>
 
-        <ListView Grid.Row="1" Grid.Column="1" ItemsSource="{Binding PoolStats}" Name="poolDataTotals" Height="80" Margin="3,6,6,3">
-            <ListView.View>
-                <GridView >
-                    <GridViewColumn Header="Active Workers" 
-                        DisplayMemberBinding="{Binding active_workers}" />
-                    <GridViewColumn Header="Pool Speed"  
-                        DisplayMemberBinding="{Binding hash_rate_stats}" />
-                    <GridViewColumn Header="Round Shares" 
-                        DisplayMemberBinding="{Binding round_shares }" />
-                    <GridViewColumn Header="Duration" 
-                        DisplayMemberBinding="{Binding round_time}" />
-                </GridView>
-            </ListView.View>
-        </ListView>
+                    <ListView Grid.Row="1" Grid.Column="1" ItemsSource="{Binding PoolStats}" Name="poolDataTotals" Height="80" Margin="3,6,6,3">
+                        <ListView.View>
+                            <GridView >
+                                <GridViewColumn Header="Active Workers" 
+                                    DisplayMemberBinding="{Binding active_workers}" />
+                                <GridViewColumn Header="Pool Speed"  
+                                    DisplayMemberBinding="{Binding hash_rate_stats}" />
+                                <GridViewColumn Header="Round Shares" 
+                                    DisplayMemberBinding="{Binding round_shares }" />
+                                <GridViewColumn Header="Duration" 
+                                    DisplayMemberBinding="{Binding round_time}" />
+                            </GridView>
+                        </ListView.View>
+                    </ListView>
 
-        <ScrollViewer VerticalScrollBarVisibility="Auto" Grid.Row="2" Grid.ColumnSpan="2" Margin="6,3,6,3">
-            <ListView ItemsSource="{Binding Workers}" Name="workerData">
-                <ListView.View>
-                    <GridView>
-                        <GridViewColumn Width="150" Header="Worker Name" 
-                            DisplayMemberBinding="{Binding worker_name}"  />
-                        <GridViewColumn Width="95" Header="Speed" 
-                            DisplayMemberBinding="{Binding hash_rate_stats}" />
-                        <GridViewColumn Width="70" Header="This Round"  
-                            DisplayMemberBinding="{Binding round_share_stats}" />
-                        <GridViewColumn Width="70" Header="Since Reset" 
-                            DisplayMemberBinding="{Binding reset_share_stats}" />
-                        <GridViewColumn Width="70" Header="Total (Ever)" 
-                            DisplayMemberBinding="{Binding total_share_stats}" />
-                        <GridViewColumn Width="70" Header="Last Share" 
-                            DisplayMemberBinding="{Binding last_share}" />
-                        <GridViewColumn Width="76" Header="Blocks Found" 
-                            DisplayMemberBinding="{Binding blocks_found}" />
-                    </GridView>
-                </ListView.View>
-            </ListView>
-        </ScrollViewer>
-        <ListView Grid.Row="3" Grid.ColumnSpan="2" ItemsSource="{Binding WorkerTotals}" Name="workerDataTotals" Height="80" Margin="6,3,6,3">
-            <ListView.View>
-                <GridView >
-                    <GridViewColumn Width="100" Header="Total Speed" 
-                        DisplayMemberBinding="{Binding hash_rate_total_stats}" />
-                    <GridViewColumn Width="100" Header="Est BTC/Day" 
-                        DisplayMemberBinding="{Binding btc_per_day_stats}" />
-                    <GridViewColumn Width="105" Header="Total This Round"  
-                        DisplayMemberBinding="{Binding round_shares_total_stats}" />
-                    <GridViewColumn Width="105" Header="Total Since Reset" 
-                        DisplayMemberBinding="{Binding reset_shares_total_stats}" />
-                    <GridViewColumn Width="90" Header="Total (Ever)" 
-                        DisplayMemberBinding="{Binding total_shares_total_stats}" />
-                    <GridViewColumn Width="110" Header="Total Blocks Found" 
-                        DisplayMemberBinding="{Binding blocks_found_total}" />
-                </GridView>
-            </ListView.View>
-        </ListView>
-
-        <TextBlock Grid.Row="4" Grid.ColumnSpan="2">
+                    <ScrollViewer VerticalScrollBarVisibility="Auto" Grid.Row="2" Grid.ColumnSpan="2" Margin="6,3,6,3">
+                        <ListView ItemsSource="{Binding Workers}" Name="workerData">
+                            <ListView.View>
+                                <GridView>
+                                    <GridViewColumn Width="150" Header="Worker Name" 
+                                        DisplayMemberBinding="{Binding worker_name}"  />
+                                    <GridViewColumn Width="95" Header="Speed" 
+                                        DisplayMemberBinding="{Binding hash_rate_stats}" />
+                                    <GridViewColumn Width="70" Header="This Round"  
+                                        DisplayMemberBinding="{Binding round_share_stats}" />
+                                    <GridViewColumn Width="70" Header="Since Reset" 
+                                        DisplayMemberBinding="{Binding reset_share_stats}" />
+                                    <GridViewColumn Width="70" Header="Total (Ever)" 
+                                        DisplayMemberBinding="{Binding total_share_stats}" />
+                                    <GridViewColumn Width="70" Header="Last Share" 
+                                        DisplayMemberBinding="{Binding last_share}" />
+                                    <GridViewColumn Width="76" Header="Blocks Found" 
+                                        DisplayMemberBinding="{Binding blocks_found}" />
+                                </GridView>
+                            </ListView.View>
+                        </ListView>
+                    </ScrollViewer>
+                    <ListView Grid.Row="3" Grid.ColumnSpan="2" ItemsSource="{Binding WorkerTotals}" Name="workerDataTotals" Height="80" Margin="6,3,6,3">
+                        <ListView.View>
+                            <GridView >
+                                <GridViewColumn Width="100" Header="Total Speed" 
+                                    DisplayMemberBinding="{Binding hash_rate_total_stats}" />
+                                <GridViewColumn Width="100" Header="Est BTC/Day" 
+                                    DisplayMemberBinding="{Binding btc_per_day_stats}" />
+                                <GridViewColumn Width="105" Header="Total This Round"  
+                                    DisplayMemberBinding="{Binding round_shares_total_stats}" />
+                                <GridViewColumn Width="105" Header="Total Since Reset" 
+                                    DisplayMemberBinding="{Binding reset_shares_total_stats}" />
+                                <GridViewColumn Width="90" Header="Total (Ever)" 
+                                    DisplayMemberBinding="{Binding total_shares_total_stats}" />
+                                <GridViewColumn Width="110" Header="Total Blocks Found" 
+                                    DisplayMemberBinding="{Binding blocks_found_total}" />
+                            </GridView>
+                        </ListView.View>
+                    </ListView>
+                </Grid>
+            </TabItem>
+            <TabItem Header="Charts">
+                <Grid>
+                    <Grid.Background>
+                        <LinearGradientBrush EndPoint="0.5,1" StartPoint="0.5,0">
+                            <GradientStop Color="#FF000000" Offset="0" />
+                            <GradientStop Color="#FF38475F" Offset="1" />
+                        </LinearGradientBrush>
+                    </Grid.Background>
+                    
+                </Grid>
+            </TabItem>
+        </TabControl>
+        <TextBlock VerticalAlignment="Bottom" HorizontalAlignment="Right" Margin="0,0,1,-3" Padding="6">
             <TextBlock Foreground="LightYellow" Margin="4,-6,2,0">donations? :)</TextBlock>
             <TextBox IsReadOnly="True" TextAlignment="Center" HorizontalAlignment="Left" VerticalAlignment="Center" Name="Donations" Margin="0,0,0,2" ToolTip="Donations appreciated &lt;3" FontSize="10" MouseDown="Donations_MouseDown" Background="#FFE9E9E9">1JAvRGSC1b7KfnEgxob7YrMDJMJ6syUg24</TextBox>
         </TextBlock>
     </Grid>
+
     <Page.Background>
         <LinearGradientBrush EndPoint="0.5,1" StartPoint="0.5,0">
             <GradientStop Color="#FF000000" Offset="0" />
