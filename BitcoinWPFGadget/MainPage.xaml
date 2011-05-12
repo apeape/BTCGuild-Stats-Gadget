@@ -7,21 +7,9 @@
       DataContext="{Binding RelativeSource={RelativeSource Self}}"
       Title="MainPage" Foreground="White">
     <Grid>
-        <TabControl TabStripPlacement="Bottom" Margin="6,6,6,8">
-            <TabControl.Background>
-                <LinearGradientBrush EndPoint="0.5,1" StartPoint="0.5,0">
-                    <GradientStop Color="#FF38475F" Offset="1" />
-                    <GradientStop Color="#FF000000" Offset="0" />
-                </LinearGradientBrush>
-            </TabControl.Background>
+        <TabControl TabStripPlacement="Bottom" Margin="6" BorderBrush="{x:Null}" Background="{x:Null}">
             <TabItem Header="Stats">
-                <Grid>
-                    <Grid.Background>
-                        <LinearGradientBrush EndPoint="0.5,1" StartPoint="0.5,0">
-                            <GradientStop Color="#FF000000" Offset="0" />
-                            <GradientStop Color="#FF38475F" Offset="1" />
-                        </LinearGradientBrush>
-                    </Grid.Background>
+                <Grid Margin="-12, -6, -12, 0" Background="{x:Null}">
                     <Grid.RowDefinitions>
                         <RowDefinition Height="32"/>
                         <RowDefinition Height="55"/>
@@ -117,17 +105,11 @@
             </TabItem>
             <TabItem Header="Charts">
                 <Grid>
-                    <Grid.Background>
-                        <LinearGradientBrush EndPoint="0.5,1" StartPoint="0.5,0">
-                            <GradientStop Color="#FF000000" Offset="0" />
-                            <GradientStop Color="#FF38475F" Offset="1" />
-                        </LinearGradientBrush>
-                    </Grid.Background>
-                    
+                    <TextBlock Foreground="LightYellow" HorizontalAlignment="Center" VerticalAlignment="Center">coming soon</TextBlock>
                 </Grid>
             </TabItem>
         </TabControl>
-        <TextBlock VerticalAlignment="Bottom" HorizontalAlignment="Right" Margin="0,0,1,-3" Padding="6">
+        <TextBlock VerticalAlignment="Bottom" HorizontalAlignment="Right" Margin="0,0,1,-0" Padding="6">
             <TextBlock Foreground="LightYellow" Margin="4,-6,2,0">donations? :)</TextBlock>
             <TextBox IsReadOnly="True" TextAlignment="Center" HorizontalAlignment="Left" VerticalAlignment="Center" Name="Donations" Margin="0,0,0,2" ToolTip="Donations appreciated &lt;3" FontSize="10" MouseDown="Donations_MouseDown" Background="#FFE9E9E9">1JAvRGSC1b7KfnEgxob7YrMDJMJ6syUg24</TextBox>
         </TextBlock>
