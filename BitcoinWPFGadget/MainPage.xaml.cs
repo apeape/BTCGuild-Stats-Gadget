@@ -54,6 +54,8 @@ namespace BitcoinWPFGadget
             {
                 try
                 {
+                    LastUpdate = DateTime.Now;
+
                     // don't update without a valid api key
                     if (this.btcguild_apikey.Text == string.Empty || this.btcguild_apikey.Text.Length != btcguild_apikey_length) return;
 
@@ -112,7 +114,7 @@ namespace BitcoinWPFGadget
                     this.WorkerTotals.Add(totals);
                     this.workerDataTotals.ItemsSource = this.WorkerTotals;
 
-                    LastUpdate = DateTime.Now;
+                    
                 }
                 catch (Exception e)
                 {
