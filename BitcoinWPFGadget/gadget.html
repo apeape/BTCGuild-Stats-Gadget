@@ -5,18 +5,66 @@
     <title>Bitcoin Charts</title>
     <style type="text/css">
     html, body {
-	    width: 692px;
-	    height: 360px;
 	    background-color: Black;
 	    padding: 1px;
 	    margin: 0px;
 	    text-align: center;
     }
     </style>
+    <script language="JavaScript" type="text/javascript">
+        // Gadget width and height.
+        var gadgetWidth = 646;
+        var gadgetHeight = 330;
+
+        // Amount to scale gadget when docked or undocked.
+        var scaleDocked = 1;
+        var scaleUndocked = 2.25;
+
+        // Amount of time desired to perform transition (in seconds).
+        var timeTransition = 0.15;
+
+        // Declare the dock and undock event handlers.
+        System.Gadget.onDock = CheckDockState;
+        System.Gadget.onUndock = CheckDockState;
+
+        // --------------------------------------------------------------------
+        // Check the gadget dock state; set the gadget style.
+        // imgBackground is the value of the 'id' attribute for the 
+        // g:background element.
+        // --------------------------------------------------------------------
+        function CheckDockState() {
+            System.Gadget.beginTransition();
+
+            var oBody = document.body.style;
+            var iframe = document.getElementById('gadgetiframe');
+
+            if (System.Gadget.docked) {
+                oBody.width = gadgetWidth * scaleDocked;
+                oBody.height = gadgetHeight * scaleDocked;
+
+                iframe.width = gadgetWidth * scaleDocked - 12;
+                iframe.height = gadgetHeight * scaleDocked - 12;
+
+                txtDocked.className = 'gadgetDocked';
+                txtDocked.innerText = 'Docked';
+            }
+            else {
+                oBody.width = gadgetWidth * scaleDocked;
+                oBody.height = gadgetHeight * scaleUndocked;
+
+                iframe.width = gadgetWidth * scaleDocked - 12;
+                iframe.height = gadgetHeight * scaleUndocked - 12;
+
+                txtDocked.className = 'gadgetUndocked';
+                txtDocked.innerText = 'Undocked';
+            }
+            System.Gadget.endTransition(System.Gadget.TransitionType.morph, timeTransition);
+        }
+    </script>
 </head>
 <body>
     <div style="text-align: center; border: 5px solid white; margin-top: -1px; margin-left: -1px; margin-right: 3px;">
-        <iframe style="width:680px; height: 348px; margin-left: -1px;" src="BitcoinWPFGadget.xbap"></iframe>
+        <iframe id="gadgetiframe" style="margin-left: -1px;" src="BitcoinWPFGadget.xbap"></iframe>
     </div>
 </body>
 </html>

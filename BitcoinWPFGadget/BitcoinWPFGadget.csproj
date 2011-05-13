@@ -31,7 +31,7 @@
     <UpdatePeriodically>false</UpdatePeriodically>
     <UpdateRequired>false</UpdateRequired>
     <MapFileExtensions>true</MapFileExtensions>
-    <ApplicationRevision>182</ApplicationRevision>
+    <ApplicationRevision>207</ApplicationRevision>
     <ApplicationVersion>1.0.0.%2a</ApplicationVersion>
     <UseApplicationTrust>false</UseApplicationTrust>
     <PublishWizardCompleted>true</PublishWizardCompleted>
@@ -55,6 +55,9 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="Kent.Boogaart.Windows.Controls">
+      <HintPath>..\..\Kent.Boogaart.Windows.Controls\Kent.Boogaart.Windows.Controls\bin\Release\Kent.Boogaart.Windows.Controls.dll</HintPath>
+    </Reference>
     <Reference Include="Newtonsoft.Json">
       <HintPath>..\..\json35b4\Bin\Newtonsoft.Json.dll</HintPath>
     </Reference>
