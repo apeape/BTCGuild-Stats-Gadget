@@ -68,10 +68,10 @@ namespace BitcoinWPFGadget
             {
                 get
                 {
-                    if (last_share > MainPage.yellowIdleThreshold)
-                        return Brushes.LightYellow;
                     if (last_share > MainPage.redIdleThreshold)
                         return Brushes.LightPink;
+                    if (last_share > MainPage.yellowIdleThreshold)
+                        return Brushes.LightYellow;
                     else return Brushes.LightGreen;
                 }
             }
