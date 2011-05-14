@@ -146,8 +146,11 @@ namespace BitcoinWPFGadget
             }
             catch (Exception e)
             {
-                // probably an error deserializing the json, or we timed out trying to read it
-                this.test.Text = e.Message;
+                UpdateGUI(() =>
+                {
+                    // probably an error deserializing the json, or we timed out trying to read it
+                    this.test.Text = e.Message;
+                });
             }
         }
 
