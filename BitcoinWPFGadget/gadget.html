@@ -6,19 +6,27 @@
     <style type="text/css">
     html, body {
 	    background-color: Black;
+	    width: 646px;
 	    padding: 1px;
 	    margin: 0px;
+	    margin-left: 0px;
 	    text-align: center;
     }
     </style>
     <script language="JavaScript" type="text/javascript">
         // Gadget width and height.
-        var gadgetWidth = 646;
-        var gadgetHeight = 330;
+        var rowHeight = 22;
 
-        // Amount to scale gadget when docked or undocked.
-        var scaleDocked = 1;
-        var scaleUndocked = 2.25;
+        ////////////////////////////////////////////////
+        // set your default # of worker rows visible here
+        var rowCountSmall = 6;
+        var rowCountLarge = 20;
+        ///////////////////////////////////////////////
+
+        var defaultHeight = 248;
+        var gadgetWidth = 646;
+        var gadgetHeight = defaultHeight + (rowCountSmall * rowHeight);
+
 
         // Amount of time desired to perform transition (in seconds).
         var timeTransition = 0.15;
@@ -39,21 +47,21 @@
             var iframe = document.getElementById('gadgetiframe');
 
             if (System.Gadget.docked) {
-                oBody.width = gadgetWidth * scaleDocked;
-                oBody.height = gadgetHeight * scaleDocked;
+                oBody.width = gadgetWidth;
+                oBody.height = defaultHeight + (rowCountSmall * rowHeight);
 
-                iframe.width = gadgetWidth * scaleDocked - 12;
-                iframe.height = gadgetHeight * scaleDocked - 12;
+                iframe.width = gadgetWidth - 12;
+                iframe.height = (defaultHeight + (rowCountSmall * rowHeight)) - 12;
 
                 txtDocked.className = 'gadgetDocked';
                 txtDocked.innerText = 'Docked';
             }
             else {
-                oBody.width = gadgetWidth * scaleDocked;
-                oBody.height = gadgetHeight * scaleUndocked;
+                oBody.width = gadgetWidth;
+                oBody.height = defaultHeight + (rowCountLarge * rowHeight);
 
-                iframe.width = gadgetWidth * scaleDocked - 12;
-                iframe.height = gadgetHeight * scaleUndocked - 12;
+                iframe.width = gadgetWidth - 12;
+                iframe.height = (defaultHeight + (rowCountLarge * rowHeight)) - 12;
 
                 txtDocked.className = 'gadgetUndocked';
                 txtDocked.innerText = 'Undocked';
@@ -64,7 +72,7 @@
 </head>
 <body>
     <div style="text-align: center; border: 5px solid white; margin-top: -1px; margin-left: -1px; margin-right: 3px;">
-        <iframe id="gadgetiframe" style="margin-left: -1px;" src="BitcoinWPFGadget.xbap"></iframe>
+        <iframe id="gadgetiframe" style="margin-left: -1px; width: 634px;" src="BitcoinWPFGadget.xbap"></iframe>
     </div>
 </body>
 </html>

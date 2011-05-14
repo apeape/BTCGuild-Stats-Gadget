@@ -14,6 +14,7 @@ using System.Windows.Shapes;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Collections.ObjectModel;
+using System.Globalization;
 
 namespace BitcoinWPFGadget
 {
@@ -33,99 +34,121 @@ namespace BitcoinWPFGadget
         public ObservableCollection<BTCGuild.WorkerTotals> WorkerTotals { get; set; }
         public ObservableCollection<BTCGuild.Pool> PoolStats { get; set; }
 
+        string btcguildapikey = String.Empty;
+        BTCGuild.Stats stats = default(BTCGuild.Stats);
+        double currentDifficulty;
+
+        public static TimeSpan yellowIdleThreshold;
+        public static TimeSpan redIdleThreshold;
+
         public MainPage()
         {
+            this.DataContext = this;
             InitializeComponent();
 
             this.btcguild_apikey.Text = Properties.Settings.Default.btcguild_apikey;
 
-            LastUpdate = DateTime.Now;
+            this.LastUpdate = DateTime.Now;
+
+            this.User = new ObservableCollection<BTCGuild.User>();
+            this.Workers = new ObservableCollection<BTCGuild.Worker>();
+            this.WorkerTotals = new ObservableCollection<BTCGuild.WorkerTotals>();
+            this.PoolStats = new ObservableCollection<BTCGuild.Pool>();
+
+            this.userStats.ItemsSource = this.User;
+            this.poolStats.ItemsSource = this.PoolStats;
+            this.workerStats.ItemsSource = this.Workers;
+            // custom worker list background color based on last share time
+            this.workerStats.ItemContainerStyleSelector = new WorkerListStyleSelector();
+
+            this.workerTotalsStats.ItemsSource = this.WorkerTotals;
 
             // start a timer to update the stats
-            updateTimer = new Timer(UpdateTimerTick, null, TimeSpan.Zero, timerUpdateRate);
+            this.updateTimer = new Timer(this.UpdateTimerTick, null, TimeSpan.Zero, this.timerUpdateRate);
 
             // start a timer to update the update countdown display
-            displayCountdownTimer = new Timer(UpdateCountdownDisplay, null, TimeSpan.Zero, TimeSpan.FromSeconds(1));
+            this.displayCountdownTimer = new Timer(UpdateCountdownDisplay, null, TimeSpan.Zero, TimeSpan.FromSeconds(1));
         }
 
         public void UpdateTimerTick(object state)
         {
-            UpdateGUI(() =>
+            this.LastUpdate = DateTime.Now;
+
+            // don't update without a valid api key
+            if (btcguildapikey == string.Empty || btcguildapikey.Length != btcguild_apikey_length) return;
+
+            try
             {
-                try
+
+                // grab stats from json api
+                stats = BTCGuild.GetStats(btcguildapikey);
+                if (stats == default(BTCGuild.Stats))
+                    throw new System.Runtime.Serialization.SerializationException("Failed to deserialize BTCGuild stats!");
+
+                // grab current difficulty
+                currentDifficulty = Utility.Deserialize<double>("http://blockexplorer.com/q/getdifficulty");
+
+                UpdateGUI(() =>
                 {
-                    LastUpdate = DateTime.Now;
+                    try
+                    {
+                        // bind user stats
+                        this.User.Clear();
+                        this.User.Add(stats.user);
 
-                    // don't update without a valid api key
-                    if (this.btcguild_apikey.Text == string.Empty || this.btcguild_apikey.Text.Length != btcguild_apikey_length) return;
+                        // bind pool stats
+                        this.PoolStats.Clear();
+                        this.PoolStats.Add(stats.pool);
 
-                    // grab stats from json api
-                    BTCGuild.Stats stats = BTCGuild.GetStats(this.btcguild_apikey.Text);
-                    if (stats == default(BTCGuild.Stats))
-                        throw new System.Runtime.Serialization.SerializationException("Failed to deserialize BTCGuild stats!");
+                        // bind worker stats
+                        var workerstats = stats.workers.Values.ToList();
+                        this.Workers.Clear();
+                        workerstats.ForEach(worker => this.Workers.Add(worker));
 
-                    // bind user stats
-                    this.User = new ObservableCollection<BTCGuild.User>();
-                    this.User.Add(stats.user);
-                    this.userData.ItemsSource = this.User;
+                        // calculate totals
+                        var totals = new BTCGuild.WorkerTotals();
+                        workerstats.ForEach(worker =>
+                            {
+                                totals.total_hash_rate += worker.hash_rate;
+                                totals.blocks_found_total += worker.blocks_found;
+                                totals.reset_shares_total += worker.reset_shares;
+                                totals.reset_stales_total += worker.reset_stales;
+                                totals.round_shares_total += worker.round_shares;
+                                totals.round_stales_total += worker.round_stales;
+                                totals.total_shares_total += worker.total_shares;
+                                totals.total_stales_total += worker.total_stales;
+                            });
 
-                    // bind pool stats
-                    this.PoolStats = new ObservableCollection<BTCGuild.Pool>();
-                    this.PoolStats.Add(stats.pool);
-                    this.poolDataTotals.ItemsSource = this.PoolStats;
-
-                    // bind worker stats
-                    var workerstats = stats.workers.Values.ToList();
-                    this.Workers = new ObservableCollection<BTCGuild.Worker>();
-                    workerstats.ForEach(worker => this.Workers.Add(worker));
-                    this.workerData.ItemsSource = this.Workers;
-
-                    // calculate totals
-                    var totals = new BTCGuild.WorkerTotals();
-                    this.WorkerTotals = new ObservableCollection<BTCGuild.WorkerTotals>();
-                    workerstats.ForEach(worker =>
+                        if (currentDifficulty == default(double))
                         {
-                            totals.total_hash_rate += worker.hash_rate;
-                            totals.blocks_found_total += worker.blocks_found;
-                            totals.reset_shares_total += worker.reset_shares;
-                            totals.reset_stales_total += worker.reset_stales;
-                            totals.round_shares_total += worker.round_shares;
-                            totals.round_stales_total += worker.round_stales;
-                            totals.total_shares_total += worker.total_shares;
-                            totals.total_stales_total += worker.total_stales;
-                        });
+                            // failed to retrieve difficulty, btc per day calculation not possible
+                        }
+                        else
+                        {
+                            // from the gribble bot:
+                            // The expected generation output, at $1 Khps, given current difficulty of [bc,diff
+                            // is [math calc 50*24*60*60 / (1/((2**224-1)/[bc,diff]*$1*1000/2**256))]
+                            // BTC per day and [math calc 50*60*60 / (1/((2**224-1)/[bc,diff]*$1*1000/2**256))] BTC per hour.".
+                            totals.btc_per_day = 50 * TimeSpan.FromDays(1).TotalSeconds / (1 / (Math.Pow(2, 224) - 1)) / currentDifficulty * totals.total_hash_rate * 1000000 / Math.Pow(2, 256);
+                        }
 
-                    // grab current difficulty
-                    double currentDifficulty = Utility.Deserialize<double>("http://blockexplorer.com/q/getdifficulty");
-                    if (currentDifficulty == default(double))
-                    {
-                        // failed to retrieve difficulty, btc per day calculation not possible
+                        this.WorkerTotals.Clear();
+                        this.WorkerTotals.Add(totals);
+
+                        this.test.Text = "BTCGuild Stats"; // reset error
                     }
-                    else
+                    catch (Exception e)
                     {
-                        // from the gribble bot:
-                        // The expected generation output, at $1 Khps, given current difficulty of [bc,diff
-                        // is [math calc 50*24*60*60 / (1/((2**224-1)/[bc,diff]*$1*1000/2**256))]
-                        // BTC per day and [math calc 50*60*60 / (1/((2**224-1)/[bc,diff]*$1*1000/2**256))] BTC per hour.".
-                        totals.btc_per_day = 50 * TimeSpan.FromDays(1).TotalSeconds / (1 / (Math.Pow(2, 224) - 1)) / currentDifficulty * totals.total_hash_rate * 1000000 / Math.Pow(2, 256);
-                    }
-
-                    this.WorkerTotals.Add(totals);
-                    this.workerDataTotals.ItemsSource = this.WorkerTotals;
-
-                    this.test.Text = "BTCGuild Stats"; // reset error
-                }
-                catch (Exception e)
-                {
-                    // probably timed out on json webrequest
-                    UpdateGUI(() =>
-                    {
+                        // probably an error updating the gui
                         this.test.Text = e.Message;
-                    });
-                }
-            });
-
-
+                    }
+                });
+            }
+            catch (Exception e)
+            {
+                // probably an error deserializing the json, or we timed out trying to read it
+                this.test.Text = e.Message;
+            }
         }
 
         public void UpdateCountdownDisplay(object state)
@@ -162,9 +185,31 @@ namespace BitcoinWPFGadget
 
         private void btcguild_apikey_TextChanged(object sender, TextChangedEventArgs e)
         {
-            // perform initial update after they paste in a new key
+            // perform initial update after they paste/type in a new key
             if (this.btcguild_apikey.Text.Length == btcguild_apikey_length)
+            {
+                btcguildapikey = this.btcguild_apikey.Text;
                 UpdateTimerTick(null);
+            }
+        }
+
+        private void numbersOnlyTextbox_PreviewTextInput(object sender, TextCompositionEventArgs e)
+        {
+            UInt32 result;
+            if (!UInt32.TryParse(e.Text, out result))
+            {
+                e.Handled = true;
+            }
+        }
+
+        private void yellowidlethreshold_TextChanged(object sender, TextChangedEventArgs e)
+        {
+            yellowIdleThreshold = TimeSpan.FromMinutes(UInt32.Parse(yellowidlethreshold.Text));
+        }
+
+        private void redidlethreshold_TextChanged(object sender, TextChangedEventArgs e)
+        {
+            redIdleThreshold = TimeSpan.FromMinutes(UInt32.Parse(redidlethreshold.Text));
         }
     }
 }

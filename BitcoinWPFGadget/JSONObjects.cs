@@ -5,6 +5,7 @@ using System.Text;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Converters;
 using System.Collections.ObjectModel;
+using System.Windows.Media;
 
 namespace BitcoinWPFGadget
 {
@@ -49,7 +50,7 @@ namespace BitcoinWPFGadget
         {
             public UInt64 blocks_found { get; set; }
             public double hash_rate { get; set; }
-            public string last_share { get; set; }
+            public TimeSpan last_share { get; set; }
             public UInt64 reset_shares { get; set; }
             public UInt64 reset_stales { get; set; }
             public UInt64 round_shares { get; set; }
@@ -62,6 +63,18 @@ namespace BitcoinWPFGadget
             public string reset_share_stats { get { return reset_shares + " (" + reset_stales + ")"; } }
             public string round_share_stats { get { return round_shares + " (" + round_stales + ")"; } }
             public string total_share_stats { get { return total_shares + " (" + total_stales + ")"; } }
+
+            public SolidColorBrush statusColor
+            {
+                get
+                {
+                    if (last_share > MainPage.yellowIdleThreshold)
+                        return Brushes.LightYellow;
+                    if (last_share > MainPage.redIdleThreshold)
+                        return Brushes.LightPink;
+                    else return Brushes.LightGreen;
+                }
+            }
         }
 
         public class WorkerTotals
