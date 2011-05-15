@@ -50,7 +50,16 @@ namespace BitcoinWPFGadget
         {
             public UInt64 blocks_found { get; set; }
             public double hash_rate { get; set; }
-            public TimeSpan last_share { get; set; }
+            public TimeSpan last_share_timespan
+            { 
+                get {
+                    TimeSpan res = new TimeSpan();
+                    if (TimeSpan.TryParse(last_share, out res))
+                        return res;
+                    else return TimeSpan.MaxValue;
+                }
+            }
+            public string last_share { get; set; }
             public UInt64 reset_shares { get; set; }
             public UInt64 reset_stales { get; set; }
             public UInt64 round_shares { get; set; }
@@ -68,9 +77,9 @@ namespace BitcoinWPFGadget
             {
                 get
                 {
-                    if (last_share > MainPage.redIdleThreshold)
+                    if (last_share_timespan > MainPage.redIdleThreshold)
                         return Brushes.LightPink;
-                    if (last_share > MainPage.yellowIdleThreshold)
+                    if (last_share_timespan > MainPage.yellowIdleThreshold)
                         return Brushes.LightYellow;
                     else return Brushes.LightGreen;
                 }
