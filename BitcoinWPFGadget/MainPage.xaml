@@ -12,7 +12,7 @@
     <Grid>
         <TabControl TabStripPlacement="Bottom" Margin="4,4,4,3" BorderBrush="{x:Null}" Background="{x:Null}">
             <TabItem Header="Stats">
-                <Grid Margin="-12, -8, -12, -3" Background="{x:Null}">
+                <Grid Margin="-12, -8, -12, -6" Background="{x:Null}">
                     <Grid.RowDefinitions>
                         <RowDefinition Height="28"/>
                         <RowDefinition Height="44"/>
@@ -188,7 +188,7 @@
                 </Grid>
             </TabItem>-->
         </TabControl>
-        <TextBlock VerticalAlignment="Bottom" HorizontalAlignment="Right" Margin="0,0,1,0" Padding="6">
+        <TextBlock VerticalAlignment="Bottom" HorizontalAlignment="Right" Margin="0,0,1,0" Padding="3">
         <TextBlock Foreground="LightYellow" Margin="4,-6,2,0">donations? :)</TextBlock>
         <TextBox IsReadOnly="True" TextAlignment="Center" HorizontalAlignment="Left"
                  VerticalAlignment="Center" Name="Donations" Margin="0,0,0,2"
