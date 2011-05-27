@@ -90,7 +90,7 @@ namespace BitcoinWPFGadget
             public UInt64 total_stales { get; set; }
             public string worker_name { get; set; }
 
-            public string hash_rate_stats { get { return hash_rate > 1000 ? (hash_rate / 1000f) + " gH/s" : hash_rate + " mH/s"; } }
+            public string hash_rate_stats { get { return hash_rate > 1000 ? (hash_rate / 1000f).ToString("0.00") + " gH/s" : hash_rate + " mH/s"; } }
             public string reset_share_stats { get { return reset_shares + " (" + reset_stales + ")"; } }
             public string round_share_stats { get { return round_shares + " (" + round_stales + ")"; } }
             public string total_share_stats { get { return total_shares + " (" + total_stales + ")"; } }
