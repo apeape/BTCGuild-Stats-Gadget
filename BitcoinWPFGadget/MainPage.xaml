@@ -16,6 +16,7 @@
                     <Grid.RowDefinitions>
                         <RowDefinition Height="32"/>
                         <RowDefinition Height="55"/>
+                        <RowDefinition Height="55"/>
                         <RowDefinition />
                         <RowDefinition Height="55"/>
                         <RowDefinition Height="32"/>
@@ -25,17 +26,13 @@
                         <ColumnDefinition />
                     </Grid.ColumnDefinitions>
                     <TextBlock VerticalAlignment="Center"  HorizontalAlignment="Left" Grid.Row="0" Grid.ColumnSpan="2" Padding="6">
-                    <TextBlock Foreground="LightYellow" Name="test" Margin="0,0,0,0">BTCGuild Stats</TextBlock>
-                    <TextBlock Foreground="LightYellow" ToolTip="BTCGuild API Key" Margin="100,0,0,0">API key</TextBlock>
-                    <TextBox TextAlignment="Left"  Name="btcguild_apikey" Margin="0,0,0,-6" ToolTip="BTCGuild API Key" FontSize="10" Background="#FFE9E9E9" Width="185" TextChanged="btcguild_apikey_TextChanged"></TextBox>
-                    <Button Content="save" Height="23" Name="savebutton" Width="75" Margin="0,0,0,-8" Click="savebutton_Click" />
-                </TextBlock>
-                    <TextBlock HorizontalAlignment="Right" VerticalAlignment="Center" Grid.Column="1" Grid.Row="0" Padding="6" Width="60" Margin="0,5,0,0">
-                    <Image Name="clock" Stretch="None" Source="/BitcoinWPFGadget;component/Rtime.png" />
-                    <TextBlock Foreground="LightYellow" Name="Countdown" ToolTip="Time until next data update">00:00</TextBlock>
-                </TextBlock>
-
-                    <ListView Grid.Row="1" Grid.Column="0" ItemsSource="{Binding User}" Name="userStats" Height="60" Margin="6,6,1,3">
+                        <TextBlock Foreground="LightYellow" Name="test" Margin="2,0,0,0">BTCGuild Stats</TextBlock>
+                        <TextBlock Foreground="LightYellow" ToolTip="BTCGuild API Key" Margin="3,0,0,0">API key</TextBlock>
+                        <TextBox TextAlignment="Left"  Name="btcguild_apikey" Margin="0,0,0,-6" ToolTip="BTCGuild API Key" FontSize="10"
+                                 Background="#FFE9E9E9" Width="145" TextChanged="btcguild_apikey_TextChanged"></TextBox>
+                        <Button Content="save" Height="23" Name="savebutton" Width="45" Margin="0,0,0,-8" Click="savebutton_Click" />
+                    </TextBlock>
+                    <ListView Grid.Row="1" Grid.Column="0" Grid.ColumnSpan="2" ItemsSource="{Binding User}" Name="userStats" Height="60" Margin="6,6,1,3" HorizontalContentAlignment="Stretch">
                         <ListView.View>
                             <GridView>
                                 <GridViewColumn Header="Confirmed" 
@@ -50,10 +47,10 @@
                         </ListView.View>
                     </ListView>
 
-                    <ListView Grid.Row="1" Grid.Column="1" ItemsSource="{Binding PoolStats}" Name="poolStats" Height="80" Margin="3,6,6,3">
+                    <ListView Grid.Row="2" Grid.Column="0" Grid.ColumnSpan="2" ItemsSource="{Binding PoolStats}" Name="poolStats" Height="80" Margin="3,6,6,3" HorizontalContentAlignment="Stretch">
                         <ListView.View>
                             <GridView >
-                                <GridViewColumn Header="Active Workers" 
+                                <GridViewColumn Header="Workers" 
                                 DisplayMemberBinding="{Binding active_workers}" />
                                 <GridViewColumn Header="Pool Speed"  
                                 DisplayMemberBinding="{Binding hash_rate_stats}" />
@@ -66,52 +63,56 @@
                     </ListView>
 
                     <!--<ScrollViewer VerticalScrollBarVisibility="Auto" >-->
-                        <ListView ItemsSource="{Binding Workers}" Name="workerStats" Grid.Row="2" Grid.ColumnSpan="2" Margin="6,3,6,3" ScrollViewer.VerticalScrollBarVisibility="Auto">
+                    <ListView ItemsSource="{Binding Workers}" Name="workerStats" Grid.Row="3" Grid.ColumnSpan="2" Margin="6,3,6,3" ScrollViewer.VerticalScrollBarVisibility="Auto" HorizontalContentAlignment="Stretch">
                             <ListView.View>
                                 <GridView>
-                                    <GridViewColumn Header="Worker Name" 
+                                    <GridViewColumn Header="Worker" 
                                     DisplayMemberBinding="{Binding worker_name}"  />
                                     <GridViewColumn Header="Speed" 
                                     DisplayMemberBinding="{Binding hash_rate_stats}" />
-                                    <GridViewColumn Header="This Round"  
+                                    <!--
+                                    <GridViewColumn Header="Round"  
                                     DisplayMemberBinding="{Binding round_share_stats}" />
-                                    <GridViewColumn Header="Since Reset" 
-                                    DisplayMemberBinding="{Binding reset_share_stats}" />
-                                    <GridViewColumn Header="Total (Ever)" 
+                                    <GridViewColumn Header="Reset" 
+                                    DisplayMemberBinding="{Binding reset_share_stats}" />-->
+                                    <GridViewColumn Header="Shares" 
                                     DisplayMemberBinding="{Binding total_share_stats}" />
-                                    <GridViewColumn Header="Last Share" 
+                                    <GridViewColumn Header="Last" 
                                     DisplayMemberBinding="{Binding last_share}" />
-                                    <GridViewColumn Header="Blocks Found" 
+                                    <GridViewColumn Header="Blocks" 
                                     DisplayMemberBinding="{Binding blocks_found}" />
                                 </GridView>
                             </ListView.View>
                         </ListView>
                     <!--</ScrollViewer>-->
-                    <ListView Grid.Row="3" Grid.ColumnSpan="2" ItemsSource="{Binding WorkerTotals}" Name="workerTotalsStats" Height="80" Margin="6,3,6,3">
+                    <ListView Grid.Row="4" Grid.ColumnSpan="2" ItemsSource="{Binding WorkerTotals}" Name="workerTotalsStats" Height="80" Margin="6,3,6,3" HorizontalContentAlignment="Stretch">
                         <ListView.View>
                             <GridView >
-                                <GridViewColumn Header="Total Speed" 
+                                <GridViewColumn Header="Speed" 
                                 DisplayMemberBinding="{Binding hash_rate_total_stats}" />
-                                <GridViewColumn Header="Est BTC/Day" 
+                                <GridViewColumn Header="BTC/Day" 
                                 DisplayMemberBinding="{Binding btc_per_day_stats}" />
-                                <GridViewColumn Header="Total This Round"  
+                                <!--
+                                <GridViewColumn Header="Round"  
                                 DisplayMemberBinding="{Binding round_shares_total_stats}" />
-                                <GridViewColumn Header="Total Since Reset" 
-                                DisplayMemberBinding="{Binding reset_shares_total_stats}" />
-                                <GridViewColumn Header="Total (Ever)" 
+                                <GridViewColumn Header="Reset" 
+                                DisplayMemberBinding="{Binding reset_shares_total_stats}" />-->
+                                <GridViewColumn Header="USD/Day" 
+                                DisplayMemberBinding="{Binding usd_per_day_stats}" />
+                                <GridViewColumn Header="Shares" 
                                 DisplayMemberBinding="{Binding total_shares_total_stats}" />
-                                <GridViewColumn Header="Total Blocks Found" 
+                                <GridViewColumn Header="Blocks" 
                                 DisplayMemberBinding="{Binding blocks_found_total}" />
                             </GridView>
                         </ListView.View>
                     </ListView>
-                    <TextBlock Grid.Row="4" Grid.ColumnSpan="2" Padding="6" VerticalAlignment="Center" Foreground="LightYellow">
-                        <TextBlock>Worker Idle Warning Thresholds (in mins since last share)</TextBlock>
+                    <TextBlock Grid.Row="5" Grid.ColumnSpan="2" Padding="6" Foreground="LightYellow" FontSize="10" Margin="3,0,0,0">
+                        <TextBlock>Idle Warning (mins)</TextBlock>
                         <Separator >
                             <Separator.Style>
                                 <Style TargetType="{x:Type Separator}">
                                     <Setter Property="Height" Value="20"/>
-                                    <Setter Property="Margin" Value="6,0,6,-5"/>
+                                    <Setter Property="Margin" Value="0,0,0,-5"/>
                                     <Setter Property="Focusable" Value="false"/>
                                     <Setter Property="Template">
                                         <Setter.Value>
@@ -123,22 +124,44 @@
                                 </Style>
                             </Separator.Style>
                         </Separator>
-                        <TextBlock >Yellow</TextBlock>
-                        <TextBox TextAlignment="Left"  Name="yellowidlethreshold" Margin="0,0,0,-5" FontSize="11" Background="#FFE9E9E9" Width="35" PreviewTextInput="numbersOnlyTextbox_PreviewTextInput" TextChanged="yellowidlethreshold_TextChanged">4</TextBox>
-                        <TextBlock Foreground="LightYellow">Red</TextBlock>
-                        <TextBox TextAlignment="Left"  Name="redidlethreshold" Margin="0,0,0,-5" FontSize="11" Background="#FFE9E9E9" Width="35" PreviewTextInput="numbersOnlyTextbox_PreviewTextInput" TextChanged="redidlethreshold_TextChanged">10</TextBox>
+                        <TextBlock FontSize="9" Foreground="Yellow" >Yellow</TextBlock>
+                        <TextBox TextAlignment="Left"  Name="yellowidlethreshold" Margin="0,0,0,-5" FontSize="10" Background="#FFE9E9E9" Width="20" PreviewTextInput="numbersOnlyTextbox_PreviewTextInput" TextChanged="yellowidlethreshold_TextChanged">4</TextBox>
+                        <TextBlock FontSize="9" Foreground="LightPink">Red</TextBlock>
+                        <TextBox TextAlignment="Left"  Name="redidlethreshold" Margin="0,0,0,-5" FontSize="10" Background="#FFE9E9E9" Width="20" PreviewTextInput="numbersOnlyTextbox_PreviewTextInput" TextChanged="redidlethreshold_TextChanged">10</TextBox>
+                    </TextBlock>
+                    <TextBlock Grid.Row="5" Grid.ColumnSpan="2" VerticalAlignment="Center" HorizontalAlignment="Left" Margin="196,0,0,0">    
+                        <TextBlock Margin="0,1,0,0">
+                            <TextBlock Foreground="LightYellow">USD:</TextBlock>
+                            <TextBlock Foreground="LightGreen" Name="usd">$0.00</TextBlock>
+                        </TextBlock>
+
+                        <Path Name="UpArrow" Visibility="Hidden" Fill="#FF83FF62" Data="M 0 6 L 12 6 L 6 0 Z" Margin="0,0,0,0"/>
+                        <Path Name="DownArrow" Visibility="Hidden" Fill="Red" Data="M 0 0 L 6 6 L 12 0 Z" Margin="-15,0,0,0" />
+                    </TextBlock>
+                    
+                    <TextBlock Grid.Row="5" Grid.Column="1" HorizontalAlignment="Right" VerticalAlignment="Center" Width="60" Margin="0,1,0,0">
+                        <Image Name="clock" Stretch="None" Source="/BitcoinWPFGadget;component/Rtime.png" />
+                        <TextBlock Foreground="LightYellow" Name="Countdown" ToolTip="Time until next data update">00:00</TextBlock>
                     </TextBlock>
                 </Grid>
             </TabItem>
+            <!--
             <TabItem Header="Charts">
                 <Grid>
-                    <TextBlock Foreground="LightYellow" HorizontalAlignment="Center" VerticalAlignment="Center">coming soon</TextBlock>
+                    <TextBlock Foreground="LightYellow" HorizontalAlignment="Center" VerticalAlignment="Center">
+                        coming soon
+                    </TextBlock>
                 </Grid>
-            </TabItem>
+            </TabItem>-->
         </TabControl>
         <TextBlock VerticalAlignment="Bottom" HorizontalAlignment="Right" Margin="0,0,1,-0" Padding="6">
         <TextBlock Foreground="LightYellow" Margin="4,-6,2,0">donations? :)</TextBlock>
-        <TextBox IsReadOnly="True" TextAlignment="Center" HorizontalAlignment="Left" VerticalAlignment="Center" Name="Donations" Margin="0,0,0,2" ToolTip="Donations appreciated &lt;3" FontSize="10" MouseDown="Donations_MouseDown" Background="#FFE9E9E9">1JAvRGSC1b7KfnEgxob7YrMDJMJ6syUg24</TextBox>
+        <TextBox IsReadOnly="True" TextAlignment="Center" HorizontalAlignment="Left"
+                 VerticalAlignment="Center" Name="Donations" Margin="0,0,0,2"
+                 ToolTip="Donations appreciated &lt;3" FontSize="10"
+                 MouseDown="Donations_MouseDown" Background="#FFE9E9E9">
+            1JAvRGSC1b7KfnEgxob7YrMDJMJ6syUg24
+        </TextBox>
     </TextBlock>
     </Grid>
 

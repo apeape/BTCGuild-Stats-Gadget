@@ -9,6 +9,28 @@ using System.Windows.Media;
 
 namespace BitcoinWPFGadget
 {
+    public class MtGox
+    {
+        public static MtGox.TickerData GetTickerData()
+        {
+            return Utility.Deserialize<MtGox.Ticker>("https://mtgox.com/code/data/ticker.php").ticker;
+        }
+
+        public class Ticker
+        {
+            public TickerData ticker { get; set; }
+        }
+        public class TickerData
+        {
+            public decimal high { get; set; }
+            public decimal low { get; set; }
+            public double vol { get; set; }
+            public decimal buy { get; set; }
+            public decimal sell { get; set; }
+            public decimal last { get; set; }
+        }
+    }
+
     public class BTCGuild
     {
         public static BTCGuild.Stats GetStats(string apikey)
@@ -40,10 +62,10 @@ namespace BitcoinWPFGadget
             public double payouts { get; set; }
             public double unconfirmed_rewards { get; set; }
 
-            public string confirmed_rewards_stats { get { return confirmed_rewards + " BTC"; } }
-            public string estimated_rewards_stats { get { return estimated_rewards + " BTC"; } }
+            public string confirmed_rewards_stats { get { return confirmed_rewards.ToString("0.000") + " BTC"; } }
+            public string estimated_rewards_stats { get { return estimated_rewards.ToString("0.000") + " BTC"; } }
             public string payouts_stats { get { return payouts + " BTC"; } }
-            public string unconfirmed_rewards_stats { get { return unconfirmed_rewards + " BTC"; } }
+            public string unconfirmed_rewards_stats { get { return unconfirmed_rewards.ToString("0.000") + " BTC"; } }
         }
 
         public class Worker
@@ -68,7 +90,7 @@ namespace BitcoinWPFGadget
             public UInt64 total_stales { get; set; }
             public string worker_name { get; set; }
 
-            public string hash_rate_stats { get { return hash_rate + " mH/s"; } }
+            public string hash_rate_stats { get { return hash_rate > 1000 ? (hash_rate / 1000f) + " gH/s" : hash_rate + " mH/s"; } }
             public string reset_share_stats { get { return reset_shares + " (" + reset_stales + ")"; } }
             public string round_share_stats { get { return round_shares + " (" + round_stales + ")"; } }
             public string total_share_stats { get { return total_shares + " (" + total_stales + ")"; } }
@@ -96,14 +118,15 @@ namespace BitcoinWPFGadget
             public UInt64 total_shares_total { get; set; }
             public UInt64 total_stales_total { get; set; }
 
-            public string hash_rate_total_stats { get { return total_hash_rate + " mH/s"; } }
+            public string hash_rate_total_stats { get { return total_hash_rate > 1000 ? (total_hash_rate / 1000f).ToString("0.00") + " gH/s" : total_hash_rate.ToString("0") + " mH/s"; } }
             public string round_shares_total_stats { get { return round_shares_total + " (" + round_stales_total + ")"; } }
             public string reset_shares_total_stats { get { return reset_shares_total + " (" + reset_stales_total + ")"; } }
-            public string total_shares_total_stats { get { return total_shares_total + " (" + total_stales_total + ")"; } }
+            public string total_shares_total_stats { get { return total_shares_total + " (" + (((double)total_stales_total / (double)total_shares_total) * 100f).ToString("0.00") + "%)"; } }
             public UInt64 blocks_found_total { get; set; }
 
             public double btc_per_day { get; set; }
-            public string btc_per_day_stats { get { return btc_per_day.ToString("0.00"); } }
+            public string btc_per_day_stats { get { return btc_per_day.ToString("0.0"); } }
+            public string usd_per_day_stats { get; set; }
         }
     }
 

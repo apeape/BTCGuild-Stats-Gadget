@@ -38,6 +38,8 @@ namespace BitcoinWPFGadget
         BTCGuild.Stats stats = default(BTCGuild.Stats);
         double currentDifficulty;
 
+        MtGox.TickerData ticker = default(MtGox.TickerData);
+
         public static TimeSpan yellowIdleThreshold;
         public static TimeSpan redIdleThreshold;
 
@@ -74,12 +76,14 @@ namespace BitcoinWPFGadget
         {
             this.LastUpdate = DateTime.Now;
 
+            // grab current mtgox ticker
+            ticker = MtGox.GetTickerData();
+
             // don't update without a valid api key
             if (btcguildapikey == string.Empty || btcguildapikey.Length != btcguild_apikey_length) return;
 
             try
             {
-
                 // grab stats from json api
                 stats = BTCGuild.GetStats(btcguildapikey);
                 if (stats == default(BTCGuild.Stats))
@@ -92,6 +96,19 @@ namespace BitcoinWPFGadget
                 {
                     try
                     {
+                        // update mtgox exchange rate
+                        if (ticker == default(MtGox.TickerData))
+                        {
+                            // failed to retrieve mtgox data, leave current value
+                        }
+                        else
+                        {
+                            this.usd.Text = ticker.buy.ToString("C");
+                            this.UpArrow.Visibility = this.ticker.buy > this.ticker.last ? Visibility.Visible : Visibility.Hidden;
+                            this.DownArrow.Visibility = this.ticker.buy < this.ticker.last ? Visibility.Visible : Visibility.Hidden;
+                            this.usd.Foreground = this.ticker.buy >= this.ticker.last ? Brushes.LightGreen : Brushes.LightPink;
+                        }
+
                         // bind user stats
                         this.User.Clear();
                         this.User.Add(stats.user);
@@ -130,6 +147,7 @@ namespace BitcoinWPFGadget
                             // is [math calc 50*24*60*60 / (1/((2**224-1)/[bc,diff]*$1*1000/2**256))]
                             // BTC per day and [math calc 50*60*60 / (1/((2**224-1)/[bc,diff]*$1*1000/2**256))] BTC per hour.".
                             totals.btc_per_day = 50 * TimeSpan.FromDays(1).TotalSeconds / (1 / (Math.Pow(2, 224) - 1)) / currentDifficulty * totals.total_hash_rate * 1000000 / Math.Pow(2, 256);
+                            totals.usd_per_day_stats = ((decimal)totals.btc_per_day * ticker.buy).ToString("C");
                         }
 
                         this.WorkerTotals.Clear();
