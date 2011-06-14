@@ -210,7 +210,10 @@ namespace BitcoinWPFGadget
             if (this.btcguild_apikey.Text.Length == btcguild_apikey_length)
             {
                 btcguildapikey = this.btcguild_apikey.Text;
-                UpdateTimerTick(null);
+                new Thread(delegate()
+                                {
+                                    UpdateTimerTick(null);
+                                }).Start();
             }
         }
 

@@ -109,23 +109,7 @@
                         </ListView.View>
                     </ListView>
                     <TextBlock Grid.Row="5" Grid.ColumnSpan="2" Padding="6" VerticalAlignment="Center" Foreground="LightYellow" FontSize="10" Margin="3,0,0,0">
-                        <TextBlock>Idle Warning (mins)</TextBlock>
-                        <Separator >
-                            <Separator.Style>
-                                <Style TargetType="{x:Type Separator}">
-                                    <Setter Property="Height" Value="20"/>
-                                    <Setter Property="Margin" Value="0,0,0,-5"/>
-                                    <Setter Property="Focusable" Value="false"/>
-                                    <Setter Property="Template">
-                                        <Setter.Value>
-                                            <ControlTemplate TargetType="{x:Type Separator}">
-                                                <Border BorderBrush="LightSlateGray" BorderThickness="1"/>
-                                            </ControlTemplate>
-                                        </Setter.Value>
-                                    </Setter>
-                                </Style>
-                            </Separator.Style>
-                        </Separator>
+                        <TextBlock>Idle Warning (mins) :</TextBlock>
                         <TextBlock FontSize="9" Foreground="Yellow" >Yellow</TextBlock>
                         <TextBox TextAlignment="Left"  Name="yellowidlethreshold" Margin="0,0,0,-5" FontSize="10" Background="#FFE9E9E9" Width="20" PreviewTextInput="numbersOnlyTextbox_PreviewTextInput" TextChanged="yellowidlethreshold_TextChanged">4</TextBox>
                         <TextBlock FontSize="9" Foreground="LightPink">Red</TextBlock>

@@ -17,17 +17,17 @@ namespace BitcoinWPFGadget
         /// <returns></returns>
         public static T Deserialize<T>(string url)
         {
-            try
+            using (var client = new WebClient())
             {
-                using (var client = new WebClient())
+                try
                 {
                     return JsonConvert.DeserializeObject<T>(client.DownloadString(url));
                 }
-            }
-            catch (Exception)
-            {
-                // failed to deserialize, usually happens when the website is screwing up
-                return default(T);
+                catch (Exception)
+                {
+                    // failed to deserialize, usually happens when the website is screwing up
+                    return default(T);
+                }
             }
         }
 

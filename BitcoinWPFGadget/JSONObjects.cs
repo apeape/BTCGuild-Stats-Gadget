@@ -13,7 +13,10 @@ namespace BitcoinWPFGadget
     {
         public static MtGox.TickerData GetTickerData()
         {
-            return Utility.Deserialize<MtGox.Ticker>("https://mtgox.com/code/data/ticker.php").ticker;
+            Ticker ticker = Utility.Deserialize<MtGox.Ticker>("https://mtgox.com/code/data/ticker.php");
+            if (ticker != null)
+                return ticker.ticker;
+            else return new TickerData();
         }
 
         public class Ticker
